@@ -40,16 +40,17 @@ const CalculateInstallmentPlan = (
   RemainingPrincipal = RemainingPrincipal - DeductPrincipal;
 
   retArr.push({
-    countInstallment: 1,
+    c: 1,
     prevmonthpaymentdate: null,
     thismonthpaymentdate: PAYMENTFIRSTDATE.toLocaleDateString(),
-    daysDifferences: daysDifferences,
-    PaymentAmount: PaymentAmount.at(0).installment,
-    InterestDueAmount: InterestDueAmount,
-    DeductPrincipal,
-    RemainingPrincipal,
-    AccrueInterest,
-    InterestThisPayment,
+    DD: daysDifferences,
+    PA: PaymentAmount.at(0).installment,
+    IDA: InterestDueAmount,
+    DP: DeductPrincipal,
+    RP: RemainingPrincipal,
+    AI: AccrueInterest,
+    AILP: 0,
+    ITP: InterestThisPayment,
   });
   countInstallment++;
 
@@ -94,35 +95,35 @@ const CalculateInstallmentPlan = (
 			AccrueInterest = 0
 			RemainingPrincipal = 0
       retArr.push({
-        countInstallment: countInstallment + 1,
+        c: countInstallment + 1,
         prevmonthpaymentdate: prevmonthpaymentdate.toLocaleDateString(),
         thismonthpaymentdate: thismonthpaymentdate.toLocaleDateString(),
-        daysDifferences: daysDifferences,
-        PaymentAmount: lastPaymentAmount,
-        InterestDueAmount,
-        DeductPrincipal,
-        DeductInterests,
-        RemainingPrincipal: 0,
-        AccrueInterest,
-        AccrueInterestLastPayment,
-        InterestThisPayment,
+        DD: daysDifferences,
+        PA: lastPaymentAmount,
+        IDA: InterestDueAmount,
+        DP: DeductPrincipal,
+        DI: DeductInterests,
+        RP: RemainingPrincipal,
+        AI: AccrueInterest,
+        AILP: AccrueInterestLastPayment,
+        ITP: InterestThisPayment,
       });
       break;
     } else {
       RemainingPrincipal = round(RemainingPrincipal - DeductPrincipal);
       retArr.push({
-        countInstallment: countInstallment + 1,
+        c: countInstallment + 1,
         prevmonthpaymentdate: prevmonthpaymentdate.toLocaleDateString(),
         thismonthpaymentdate: thismonthpaymentdate.toLocaleDateString(),
-        daysDifferences: daysDifferences,
-        PaymentAmount: thispayment.installment,
-        InterestDueAmount: InterestDueAmount,
-        DeductPrincipal,
-        DeductInterests,
-        RemainingPrincipal,
-        AccrueInterest,
-        AccrueInterestLastPayment,
-        InterestThisPayment,
+        DD: daysDifferences,
+        PA: thispayment.installment,
+        IDA: InterestDueAmount,
+        DP: DeductPrincipal,
+        DI: DeductInterests,
+        RP: RemainingPrincipal,
+        AI: AccrueInterest,
+        AILP: AccrueInterestLastPayment,
+        ITP: InterestThisPayment,
       });
     }
     prevmonthpaymentdate = thismonthpaymentdate;
@@ -132,7 +133,6 @@ const CalculateInstallmentPlan = (
 };
 
 const CalculateInstallmentPlan_DE = (
-  TermYear,
   Principal,
   PaymentAmount
 ) => {

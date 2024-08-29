@@ -20,25 +20,4 @@ const res = CalculateInstallmentPlan(
   PaymentAmount
 );
 
-console.log(res[35]);
-console.log(res[36]);
-console.log(res.at(-1));
-// console.log(
-//   CalculateInstallmentPlan(
-//     DISBURSEMENTDATE,
-//     PAYMENTFIRSTDATE,
-//     PAYMENTDUEDAY,
-//     Principal,
-//     PaymentAmount
-//   ).at(-2)
-// );
-// console.log(
-//   CalculateInstallmentPlan(
-//     DISBURSEMENTDATE,
-//     PAYMENTFIRSTDATE,
-//     PAYMENTDUEDAY,
-//     Principal,
-//     PaymentAmount
-//   ).at(-1)
-// );
-
+console.log(res[0]);
