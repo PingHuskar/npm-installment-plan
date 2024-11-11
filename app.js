@@ -56,7 +56,14 @@ const CalculateInstallmentPlan = (
 
   while (true) {
     if (countInstallment + 1 > TERM) break;
-    month++;
+    if (
+      countInstallment == 1 &&
+      PAYMENTDUEDAY >= 25 &&
+      new Date(PAYMENTFIRSTDATE).getDate() <= 5
+    ) {
+    } else {
+      month++;
+    }
     AccrueInterestLastPayment = AccrueInterest;
     if (month >= monthsInAYear) {
       month -= monthsInAYear;

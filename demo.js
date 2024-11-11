@@ -1,6 +1,6 @@
-const DISBURSEMENTDATE = new Date(2023, 10 - 1, 25);
-const PAYMENTFIRSTDATE = new Date(2023, 11 - 1, 24);
-const PAYMENTDUEDAY = 24;
+const DISBURSEMENTDATE = new Date(2023, 10 - 1, 30);
+const PAYMENTFIRSTDATE = new Date(2023, 11 - 1, 1);
+const PAYMENTDUEDAY = 25;
 const Principal = 500000;
 
 const PaymentAmount = [
@@ -21,3 +21,5 @@ const res = CalculateInstallmentPlan(
 );
 
 console.log(res[0]);
+console.log(res[1]);
+console.log(res[2]);
