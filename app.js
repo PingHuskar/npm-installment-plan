@@ -11,7 +11,9 @@ const CalculateInstallmentPlan = (
   PAYMENTFIRSTDATE,
   PAYMENTDUEDAY,
   Principal,
-  PaymentAmount
+  PaymentAmount,
+  TopupAmt = 0,
+  TopupStart = 1,
 ) => {
   const retArr = [];
   const TERM = PaymentAmount.at(-1).to
@@ -35,7 +37,7 @@ const CalculateInstallmentPlan = (
   );
   let InterestThisPayment = InterestDueAmount;
   let DeductPrincipal = round(
-    PaymentAmount.at(0).installment - InterestDueAmount
+    PaymentAmount.at(0).installment + (TopupStart <= 1 ? TopupAmt : 0) - InterestDueAmount
   );
   RemainingPrincipal = RemainingPrincipal - DeductPrincipal;
 
@@ -44,7 +46,7 @@ const CalculateInstallmentPlan = (
     prevmonthpaymentdate: null,
     thismonthpaymentdate: PAYMENTFIRSTDATE.toLocaleDateString(),
     DD: daysDifferences,
-    PA: PaymentAmount.at(0).installment,
+    PA: PaymentAmount.at(0).installment + (TopupStart == 1 ? TopupAmt : 0),
     IDA: InterestDueAmount,
     DP: DeductPrincipal,
     RP: RemainingPrincipal,
@@ -84,7 +86,11 @@ const CalculateInstallmentPlan = (
     InterestDueAmount = round(
       ((RemainingPrincipal * daysDifferences) / daysInAYear) * thispayment.IntRate
     );
-    DeductPrincipal = round(thispayment.installment - (InterestDueAmount+AccrueInterest));
+    DeductPrincipal = round(
+      thispayment.installment +
+        (TopupStart <= countInstallment+1 ? TopupAmt : 0) -
+        (InterestDueAmount + AccrueInterest)
+    );
     InterestThisPayment = InterestDueAmount;
     if (DeductPrincipal < 0) {
       AccrueInterest = -DeductPrincipal
@@ -123,7 +129,9 @@ const CalculateInstallmentPlan = (
         prevmonthpaymentdate: prevmonthpaymentdate.toLocaleDateString(),
         thismonthpaymentdate: thismonthpaymentdate.toLocaleDateString(),
         DD: daysDifferences,
-        PA: thispayment.installment,
+        PA:
+          (thispayment.installment +
+          (TopupStart <= countInstallment + 1 ? TopupAmt : 0)),
         IDA: InterestDueAmount,
         DP: DeductPrincipal,
         DI: DeductInterests,

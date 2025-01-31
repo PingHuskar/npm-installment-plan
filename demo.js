@@ -17,9 +17,13 @@ const res = CalculateInstallmentPlan(
   PAYMENTFIRSTDATE,
   PAYMENTDUEDAY,
   Principal,
-  PaymentAmount
+  PaymentAmount,
+  50000,
+  1,
 );
 
-console.log(res[0]);
-console.log(res[1]);
-console.log(res[2]);
+for (let r of res) {
+  setTimeout(() => {
+    console.log(r)
+  }, 1000 * r.c);
+}
