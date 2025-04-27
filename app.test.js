@@ -1,5 +1,6 @@
 const {
   CalculateInstallmentPlan,
+  CalculateDisbursementPlan,
 } = require("./app");
 
 test(`CalculateInstallmentPlan normal case`, () => {
@@ -1492,3 +1493,36 @@ test(`CalculateInstallmentPlan same month case`, () => {
     expect(res[119].ITP).toBe(2356.87);
   }
 )
+
+test(`CalculateDisbursementPlan`, () => {
+  const PAYMENTFIRSTDATE = new Date(2025, 1 - 1, 25);
+  const PAYMENTDUEDAY = 25;
+  const PA = [
+    { from: 1, to: 12, installment: 14675.66, IntRate: 0.25 },
+    { from: 13, to: 24, installment: 14675.66, IntRate: 0.25 },
+    { from: 25, to: 36, installment: 14675.66, IntRate: 0.25 },
+    { from: 37, to: 60, installment: 14675.66, IntRate: 0.25 },
+  ];
+  const DISB = [
+    { date: new Date(2025, 1 - 1, 1), amount: 300_000 },
+    { date: new Date(2025, 1 - 1, 2), amount: 200_000 },
+  ]
+  const res = CalculateDisbursementPlan(
+    DISB,
+    PA,
+    PAYMENTFIRSTDATE,
+    PAYMENTDUEDAY
+  )
+  expect(res[0].thismonthpaymentdate).toBe('1/25/2025');
+  expect(res[0].c).toBe(1);
+  expect(res[0].PA).toBe(14675.66);
+  expect(res[0].IDA).toBe(8082.19);
+  expect(res[0].DP).toBe(6593.47);
+  expect(res[0].RP).toBe(493406.53); //Balance
+  expect(res[1].c).toBe(2);
+  expect(res[1].thismonthpaymentdate).toBe('2/25/2025');
+  expect(res[1].PA).toBe(14675.66);
+  expect(res[1].IDA).toBe(10476.44);
+  expect(res[1].DP).toBe(4199.22);
+  expect(res[1].RP).toBe(489207.31); //Balance
+})
