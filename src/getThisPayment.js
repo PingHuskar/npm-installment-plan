@@ -1,1 +1,1 @@
-module.exports = (arr, n) => arr.find(pay => n >= pay.from && n <= pay.to);
+export default (arr, n) => arr.find(pay => n >= pay.from && n <= pay.to);

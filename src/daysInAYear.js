@@ -1,1 +1,1 @@
-module.exports = 365;
+export default 365;

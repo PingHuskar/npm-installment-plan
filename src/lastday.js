@@ -1,1 +1,1 @@
-module.exports = (y, m) => new Date(y, m + 1, 0).getDate();
+export default (y, m) => new Date(y, m + 1, 0).getDate();

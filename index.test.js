@@ -1,7 +1,7 @@
-const {
+import {
   CalculateInstallmentPlan,
   CalculateDisbursementPlan,
-} = require(".");
+} from "./src"
 
 test(`CalculateInstallmentPlan normal case`, () => {
     const DISBURSEMENTDATE = new Date(2023, 10 - 1, 25);

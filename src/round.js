@@ -1,5 +1,3 @@
-const round = (num) => {
-    return Math.round(num*100)/100
-}
-
-module.exports = round;
+export default (num) => {
+    return Math.round(num * 100) / 100
+};

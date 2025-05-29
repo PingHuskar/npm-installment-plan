@@ -1,1 +1,1 @@
-module.exports = 12;
+export default 12;

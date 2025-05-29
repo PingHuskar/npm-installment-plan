@@ -1,11 +1,11 @@
-const lastday = require("./lastday");
-const daysDifference = require("./daysDifference");
-const round = require("./round");
-const getThisPayment = require("./getThisPayment");
-const monthsInAYear = require("./monthsInAYear");
-const daysInAYear = require("./daysInAYear");
+import lastday from "./lastday";
+import daysDifference from "./daysDifference";
+import round from "./round";
+import getThisPayment from "./getThisPayment";
+import monthsInAYear from "./monthsInAYear";
+import daysInAYear from "./daysInAYear";
 
-const CalculateInstallmentPlan = (
+export default (
   DISBURSEMENTDATE,
   PAYMENTFIRSTDATE,
   PAYMENTDUEDAY,
@@ -148,4 +148,3 @@ const CalculateInstallmentPlan = (
   return retArr;
 };
 
-module.exports = CalculateInstallmentPlan;
