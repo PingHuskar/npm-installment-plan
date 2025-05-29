@@ -1,3 +1,5 @@
+const CalculateInstallmentPlan = require("../src/CalculateInstallmentPlan");
+
 const DISBURSEMENTDATE = new Date(2023, 10 - 1, 30);
 const PAYMENTFIRSTDATE = new Date(2023, 11 - 1, 1);
 const PAYMENTDUEDAY = 25;
@@ -9,8 +11,6 @@ const PaymentAmount = [
   { from: 25, to: 36, installment: 2300, IntRate: 0.0414 },
   { from: 37, to: 120, installment: 2300, IntRate: 0.0594 },
 ];
-
-const { CalculateInstallmentPlan} = require("./app");
 
 const res = CalculateInstallmentPlan(
   DISBURSEMENTDATE,

@@ -1,0 +1,1 @@
+module.exports = (d0, d1) => Math.round((new Date(+d1).setHours(12) - new Date(+d0).setHours(12)) / 8.64e7);

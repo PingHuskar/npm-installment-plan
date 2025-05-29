@@ -1,7 +1,7 @@
 const {
   CalculateInstallmentPlan,
   CalculateDisbursementPlan,
-} = require("./app");
+} = require(".");
 
 test(`CalculateInstallmentPlan normal case`, () => {
     const DISBURSEMENTDATE = new Date(2023, 10 - 1, 25);
@@ -1513,16 +1513,48 @@ test(`CalculateDisbursementPlan`, () => {
     PAYMENTFIRSTDATE,
     PAYMENTDUEDAY
   )
-  expect(res[0].thismonthpaymentdate).toBe('1/25/2025');
+  expect(res[0].thismonthpaymentdate == '1/25/2025' || res[0].thismonthpaymentdate == '25/1/2568').toBeTruthy();
   expect(res[0].c).toBe(1);
   expect(res[0].PA).toBe(14675.66);
   expect(res[0].IDA).toBe(8082.19);
   expect(res[0].DP).toBe(6593.47);
   expect(res[0].RP).toBe(493406.53); //Balance
   expect(res[1].c).toBe(2);
-  expect(res[1].thismonthpaymentdate).toBe('2/25/2025');
+  expect(res[1].thismonthpaymentdate == '2/25/2025' || res[1].thismonthpaymentdate == '25/2/2568').toBeTruthy();
   expect(res[1].PA).toBe(14675.66);
   expect(res[1].IDA).toBe(10476.44);
   expect(res[1].DP).toBe(4199.22);
   expect(res[1].RP).toBe(489207.31); //Balance
+})
+
+test(`CalculateDisbursementPlan2`, () => {
+  const PAYMENTFIRSTDATE = new Date(2025, 5 - 1, 1);
+  const PAYMENTDUEDAY = 1;
+  const PA = [
+    { from: 1, to: 12, installment: 14100, IntRate: 0.2499 },
+    { from: 13, to: 24, installment: 14100, IntRate: 0.2499 },
+    { from: 25, to: 36, installment: 14100, IntRate: 0.2499 },
+    { from: 37, to: 60, installment: 14100, IntRate: 0.2499 },
+  ];
+  const DISB = [
+    { date: new Date(2025, 4 - 1, 22), amount: 100_000 + 246 },
+    { date: new Date(2025, 4 - 1, 22), amount: 250_000 },
+    { date: new Date(2025, 4 - 1, 23), amount: 50_000 },
+    { date: new Date(2025, 4 - 1, 23), amount: 80_000 },
+  ]
+  const res = CalculateDisbursementPlan(
+    DISB,
+    PA,
+    PAYMENTFIRSTDATE,
+    PAYMENTDUEDAY
+  )
+  expect(res[0].c).toBe(1);
+  expect(res[0].PA).toBe(14100);
+  expect(res[0].IDA).toBe(2870.23);
+  expect(res[0].DP).toBe(11229.77);
+  expect(res[0].RP).toBe(469016.23); //Balance
+  expect(res[1].c).toBe(2);
+  expect(res[1].PA).toBe(14100);
+  expect(res[1].RP).toBe(464870.81); //Balance
+  expect(res[58].PA).toBe(4770.26); 
 })
