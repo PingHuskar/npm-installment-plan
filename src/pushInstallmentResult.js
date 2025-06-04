@@ -1,32 +1,16 @@
-function pushInstallmentResult(
-    arr,
-    c,
-    prevmonthpaymentdate,
-    thismonthpaymentdate,
-    daysDifferences,
-    PA,
-    IDA,
-    DP,
-    DI,
-    RP,
-    AI,
-    AILP,
-    ITP
-) {
+export default (arr, params) => {
     arr.push({
-        c,
-        prevmonthpaymentdate: prevmonthpaymentdate ? prevmonthpaymentdate.toLocaleDateString() : null,
-        thismonthpaymentdate: thismonthpaymentdate.toLocaleDateString(),
-        DD: daysDifferences,
-        PA,
-        IDA,
-        DP,
-        DI,
-        RP,
-        AI,
-        AILP,
-        ITP,
+        c: params.c,
+        prevmonthpaymentdate: params.prevmonthpaymentdate ? params.prevmonthpaymentdate.toLocaleDateString() : null,
+        thismonthpaymentdate: params.thismonthpaymentdate.toLocaleDateString(),
+        DD: params.daysDifferences,
+        PA: params.PA,
+        IDA: params.InterestDueAmount,
+        DP: params.DeductPrincipal,
+        DI: params.DeductInterests,
+        RP: params.RemainingPrincipal,
+        AI: params.AccrueInterest,
+        AILP: params.AccrueInterestLastPayment,
+        ITP: params.InterestThisPayment,
     });
 }
-
-export default pushInstallmentResult;

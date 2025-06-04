@@ -47,21 +47,20 @@ export default (
   RemainingPrincipal = round(RemainingPrincipal - DeductPrincipal, 2);
 
   // First push
-  pushInstallmentResult(
-    retArr,
-    countInstallment + 1,
-    null,
-    PAYMENTFIRSTDATE,
+  pushInstallmentResult(retArr, {
+    c: countInstallment + 1,
+    prevmonthpaymentdate: null,
+    thismonthpaymentdate: PAYMENTFIRSTDATE,
     daysDifferences,
-    firstInstallment + (TopupStart == 1 ? TopupAmt : 0),
+    PA: firstInstallment + (TopupStart == 1 ? TopupAmt : 0),
     InterestDueAmount,
     DeductPrincipal,
-    undefined,
+    DeductInterests: undefined,
     RemainingPrincipal,
     AccrueInterest,
-    0,
+    AccrueInterestLastPayment: 0,
     InterestThisPayment
-  );
+  });
   countInstallment++;
 
   while (true) {
@@ -114,13 +113,12 @@ export default (
       lastPaymentAmount = round(RemainingPrincipal + InterestDueAmount);
       AccrueInterest = 0;
       RemainingPrincipal = 0;
-      pushInstallmentResult(
-        retArr,
-        countInstallment + 1,
+      pushInstallmentResult(retArr, {
+        c: countInstallment + 1,
         prevmonthpaymentdate,
         thismonthpaymentdate,
         daysDifferences,
-        lastPaymentAmount,
+        PA: lastPaymentAmount,
         InterestDueAmount,
         DeductPrincipal,
         DeductInterests,
@@ -128,18 +126,17 @@ export default (
         AccrueInterest,
         AccrueInterestLastPayment,
         InterestThisPayment
-      );
+      });
       break;
     }
 
     RemainingPrincipal = round(RemainingPrincipal - DeductPrincipal, 2);
-    pushInstallmentResult(
-      retArr,
-      countInstallment + 1,
+    pushInstallmentResult(retArr, {
+      c: countInstallment + 1,
       prevmonthpaymentdate,
       thismonthpaymentdate,
       daysDifferences,
-      thisInstallment + (isTopup ? TopupAmt : 0),
+      PA: thisInstallment + (isTopup ? TopupAmt : 0),
       InterestDueAmount,
       DeductPrincipal,
       DeductInterests,
@@ -147,7 +144,7 @@ export default (
       AccrueInterest,
       AccrueInterestLastPayment,
       InterestThisPayment
-    );
+    });
     prevmonthpaymentdate = thismonthpaymentdate;
     countInstallment++;
   }
