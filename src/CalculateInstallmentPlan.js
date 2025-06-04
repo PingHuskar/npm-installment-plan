@@ -4,6 +4,7 @@ import round from "./round";
 import getThisPayment from "./getThisPayment";
 import monthsInAYear from "./monthsInAYear";
 import daysInAYear from "./daysInAYear";
+import pushInstallmentResult from "./pushInstallmentResult";
 
 export default (
   DISBURSEMENTDATE,
@@ -45,47 +46,49 @@ export default (
   );
   RemainingPrincipal = round(RemainingPrincipal - DeductPrincipal, 2);
 
-  retArr.push({
-    c: countInstallment + 1,
-    prevmonthpaymentdate: null,
-    thismonthpaymentdate: PAYMENTFIRSTDATE.toLocaleDateString(),
-    DD: daysDifferences,
-    PA: firstInstallment + (TopupStart == 1 ? TopupAmt : 0),
-    IDA: InterestDueAmount,
-    DP: DeductPrincipal,
-    RP: RemainingPrincipal,
-    AI: AccrueInterest,
-    AILP: 0,
-    ITP: InterestThisPayment,
-  });
+  // First push
+  pushInstallmentResult(
+    retArr,
+    countInstallment + 1,
+    null,
+    PAYMENTFIRSTDATE,
+    daysDifferences,
+    firstInstallment + (TopupStart == 1 ? TopupAmt : 0),
+    InterestDueAmount,
+    DeductPrincipal,
+    undefined,
+    RemainingPrincipal,
+    AccrueInterest,
+    0,
+    InterestThisPayment
+  );
   countInstallment++;
 
   while (true) {
     if (countInstallment + 1 > TERM) break;
-    if (
-      countInstallment !== 1 ||
-      PAYMENTDUEDAY < 25 ||
-      new Date(PAYMENTFIRSTDATE).getDate() > 5
-    ) {
+
+    // Only skip month increment for the special first payment case
+    const isSpecialFirst =
+      countInstallment === 1 &&
+      PAYMENTDUEDAY >= 25 &&
+      new Date(PAYMENTFIRSTDATE).getDate() <= 5;
+    if (!isSpecialFirst) {
       month++;
       if (month >= monthsInAYear) {
         month -= monthsInAYear;
         year++;
       }
     }
-    AccrueInterestLastPayment = AccrueInterest;
-    let EOMONTH = lastday(year, month);
-    let thismonthpaymentdate =
-      PAYMENTDUEDAY <= EOMONTH
-        ? new Date(year, month, PAYMENTDUEDAY)
-        : new Date(year, month, EOMONTH);
 
+    AccrueInterestLastPayment = AccrueInterest;
+    const EOMONTH = lastday(year, month);
+    const thismonthpaymentdate = new Date(year, month, Math.min(PAYMENTDUEDAY, EOMONTH));
     daysDifferences = daysDifference(prevmonthpaymentdate, thismonthpaymentdate);
 
-    let thispayment = getThisPayment(PaymentAmount, countInstallment + 1);
-    let thisIntRate = thispayment.IntRate;
-    let thisInstallment = thispayment.installment;
-    let isTopup = TopupStart <= countInstallment + 1;
+    const thispayment = getThisPayment(PaymentAmount, countInstallment + 1);
+    const thisIntRate = thispayment.IntRate;
+    const thisInstallment = thispayment.installment;
+    const isTopup = TopupStart <= countInstallment + 1;
 
     InterestDueAmount = round(
       ((RemainingPrincipal * daysDifferences) / daysInAYear) * thisIntRate
@@ -103,45 +106,48 @@ export default (
       AccrueInterest = 0;
     }
 
-    if (DeductPrincipal >= RemainingPrincipal || countInstallment + 1 >= TERM) {
+    const isLastInstallment = DeductPrincipal >= RemainingPrincipal || countInstallment + 1 >= TERM;
+    if (isLastInstallment) {
       DeductPrincipal = RemainingPrincipal;
       DeductInterests = InterestThisPayment + AccrueInterestLastPayment;
       InterestDueAmount = round(InterestDueAmount + AccrueInterest);
       lastPaymentAmount = round(RemainingPrincipal + InterestDueAmount);
       AccrueInterest = 0;
       RemainingPrincipal = 0;
-      retArr.push({
-        c: countInstallment + 1,
-        prevmonthpaymentdate: prevmonthpaymentdate.toLocaleDateString(),
-        thismonthpaymentdate: thismonthpaymentdate.toLocaleDateString(),
-        DD: daysDifferences,
-        PA: lastPaymentAmount,
-        IDA: InterestDueAmount,
-        DP: DeductPrincipal,
-        DI: DeductInterests,
-        RP: RemainingPrincipal,
-        AI: AccrueInterest,
-        AILP: AccrueInterestLastPayment,
-        ITP: InterestThisPayment,
-      });
+      pushInstallmentResult(
+        retArr,
+        countInstallment + 1,
+        prevmonthpaymentdate,
+        thismonthpaymentdate,
+        daysDifferences,
+        lastPaymentAmount,
+        InterestDueAmount,
+        DeductPrincipal,
+        DeductInterests,
+        RemainingPrincipal,
+        AccrueInterest,
+        AccrueInterestLastPayment,
+        InterestThisPayment
+      );
       break;
-    } else {
-      RemainingPrincipal = round(RemainingPrincipal - DeductPrincipal, 2);
-      retArr.push({
-        c: countInstallment + 1,
-        prevmonthpaymentdate: prevmonthpaymentdate.toLocaleDateString(),
-        thismonthpaymentdate: thismonthpaymentdate.toLocaleDateString(),
-        DD: daysDifferences,
-        PA: thisInstallment + (isTopup ? TopupAmt : 0),
-        IDA: InterestDueAmount,
-        DP: DeductPrincipal,
-        DI: DeductInterests,
-        RP: RemainingPrincipal,
-        AI: AccrueInterest,
-        AILP: AccrueInterestLastPayment,
-        ITP: InterestThisPayment,
-      });
     }
+
+    RemainingPrincipal = round(RemainingPrincipal - DeductPrincipal, 2);
+    pushInstallmentResult(
+      retArr,
+      countInstallment + 1,
+      prevmonthpaymentdate,
+      thismonthpaymentdate,
+      daysDifferences,
+      thisInstallment + (isTopup ? TopupAmt : 0),
+      InterestDueAmount,
+      DeductPrincipal,
+      DeductInterests,
+      RemainingPrincipal,
+      AccrueInterest,
+      AccrueInterestLastPayment,
+      InterestThisPayment
+    );
     prevmonthpaymentdate = thismonthpaymentdate;
     countInstallment++;
   }
