@@ -1495,7 +1495,7 @@ test(`CalculateInstallmentPlan same month case`, () => {
 )
 
 test(`CalculateDisbursementPlan`, () => {
-  const PAYMENTFIRSTDATE = new Date(2025, 1 - 1, 25);
+  const PAYMENTFIRSTDATE = new Date(2025, 0, 25);
   const PAYMENTDUEDAY = 25;
   const PA = [
     { from: 1, to: 12, installment: 14675.66, IntRate: 0.25 },
@@ -1504,8 +1504,8 @@ test(`CalculateDisbursementPlan`, () => {
     { from: 37, to: 60, installment: 14675.66, IntRate: 0.25 },
   ];
   const DISB = [
-    { date: new Date(2025, 1 - 1, 1), amount: 300_000 },
-    { date: new Date(2025, 1 - 1, 2), amount: 200_000 },
+    { date: new Date(2025, 0, 1), amount: 300_000 },
+    { date: new Date(2025, 0, 2), amount: 200_000 },
   ]
   const res = CalculateDisbursementPlan(
     DISB,
